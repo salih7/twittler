@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="styles.css"></style>
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
   </head>
@@ -11,17 +12,36 @@
         var $body = $('body');
         $body.html('');
 
-        var index = streams.home.length - 1;
-        while(index >= 0){
+        $body.append('<button>Get New Tweet</button>');
+        $('button').after('<br><br>');
+
+        var getTweet = function(index) {
           var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
+          var $tweet = $('<div id="'+ index +'"></div>');
+          var timestamp = tweet.created_at.toUTCString();
+        
           $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $tweet.appendTo($body);
-          index -= 1;
+          $tweet.insertAfter('button');
+          
+          $body.find('#'+index).append('<br><em>' + timestamp);
+          $body.find('#'+index).append('<br><br>');
+        };
+
+        var index = streams.home.length - 1;
+        var idx = 0;
+
+        while(idx <= index){
+          getTweet(idx);
+          idx += 1;
         }
+
+        $('button').on('click', function() {
+          getTweet(++index);
+        });
 
       });
 
     </script>
+
   </body>
 </html>

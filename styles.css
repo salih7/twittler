@@ -1,0 +1,13 @@
+body {
+	background: white;
+	font-weight: bold;
+}
+
+em {
+	font-size: 14px;
+	font-weight: normal;
+}
+
+button {
+	margin-bottom: 15px;
+}

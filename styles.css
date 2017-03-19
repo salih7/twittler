@@ -1,6 +1,7 @@
 body {
 	background: white;
 	font-weight: bold;
+	font-size: 20px;
 }
 
 em {
@@ -9,5 +10,11 @@ em {
 }
 
 button {
+	margin-bottom: 20px;
+	margin-right: 15px;
+}
+
+#User{
+	font-size: 30px;
 	margin-bottom: 15px;
 }

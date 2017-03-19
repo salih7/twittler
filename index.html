@@ -12,33 +12,67 @@
         var $body = $('body');
         $body.html('');
 
-        $body.append('<button>Get New Tweet</button>');
-        $('button').after('<br><br>');
+        $body.append('<div id="User"> Twittler Feed</div>');
+        $body.append('<button id="New-Tweet">Get New Tweets</button>');
 
-        var getTweet = function(index) {
-          var tweet = streams.home[index];
-          var $tweet = $('<div id="'+ index +'"></div>');
-          var timestamp = tweet.created_at.toUTCString();
+        var index = streams.home.length - 1;        
+        var filter = 'All';
         
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $tweet.insertAfter('button');
-          
-          $body.find('#'+index).append('<br><em>' + timestamp);
-          $body.find('#'+index).append('<br><br>');
-        };
+        getAllTweets(streams.home);
 
-        var index = streams.home.length - 1;
-        var idx = 0;
-
-        while(idx <= index){
-          getTweet(idx);
-          idx += 1;
-        }
-
-        $('button').on('click', function() {
-          getTweet(++index);
+        $(document).on('click', '#New-Tweet', function() {
+          if(filter === 'All') {
+            getAllTweets(streams.home, ++index); 
+          } else {
+            getAllTweets(streams.home, ++index, filter);
+          }          
         });
 
+        $(document).on('click', 'a', function() {
+          $('div').remove();
+          $body.prepend('<div id="User"> @' + $(this).text() + '\'s Tweets</div>');
+          $('#New-Tweet').after('<button id="All-Tweets">Get All Users Tweets</button>');
+          getAllTweets(streams.users[$(this).text()]);
+          filter = $(this).text();
+        });
+
+        $(document).on('click', '#All-Tweets', function() {
+          $('div').remove();
+          $('#All-Tweets').remove();
+          $body.prepend('<div id="User"> Twittler Feed</div>');
+          getAllTweets(streams.home);
+        });
+
+        function getTweet(tweets, index, user) {
+          var tweet = tweets[index];
+          if(arguments.length === 2 || arguments.length === 3 && tweet.user === user) {
+            var $tweet = $('<div id="'+ index +'"></div>');
+            var timestamp = tweet.created_at.toUTCString();
+          
+            $tweet.html('@' + '<a href="#">' + tweet.user + '</a>' + ': ' + tweet.message);
+            $tweet.insertAfter($('button').last());
+            
+            $body.find('#'+index).append('<br><em>' + timestamp);
+            $body.find('#'+index).append('<br><br>');
+          }
+        }
+
+        function getAllTweets(tweets, startIdx, user) {
+          var endIndex = tweets.length - 1;
+          if(arguments.length === 1) {
+            startIdx = 0;
+          }
+          while(startIdx <= endIndex){
+            if(arguments.length === 3) {  
+              getTweet(tweets, startIdx, user);
+              startIdx++;
+            } else {
+              getTweet(tweets, startIdx);
+              startIdx++;
+            }
+          }
+          index = endIndex;  
+        }
       });
 
     </script>
